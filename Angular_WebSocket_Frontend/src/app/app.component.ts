@@ -1,13 +1,18 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
+  templateUrl: './app.component.html',
   standalone: true,
   imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'Angular_WebSocket_Frontend';
+  constructor(private router: Router) {}
+
+  ngOnInit() {
+    // Optionally, you could navigate here if not using redirects in routing
+    this.router.navigate(['/login']);
+  }
 }
