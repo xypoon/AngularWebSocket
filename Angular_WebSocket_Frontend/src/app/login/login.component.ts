@@ -1,22 +1,22 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';  // Import FormsModule for ngModel
 import { CommonModule } from '@angular/common';  // Import CommonModule for ngIf
-import { HttpClientModule } from '@angular/common/http';  // Import HttpClientModule
 import { HttpClient } from '@angular/common/http';  // Import HttpClient
 import { Router } from '@angular/router';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
-  imports: [FormsModule, CommonModule, HttpClientModule],  // Add HttpClientModule here
+  imports: [FormsModule, CommonModule],  // Add HttpClientModule here
 })
 export class LoginComponent {
   loginData = { username: "", password: "" };
   errorMessage = "";
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router, private authService: AuthService) {}
 
   onSubmit() {
     // Log the loginData to check format before sending
@@ -28,10 +28,10 @@ export class LoginComponent {
       return; // Exit the method if data is not valid
     }
 
-    this.http.post('http://localhost:8000/api/login/', this.loginData).subscribe(
+    this.authService.login(this.loginData.username, this.loginData.password).subscribe(
       (response: any) => {
-        // Store token or session data (adjust as per your backend)
-        localStorage.setItem('token', response.token);
+        // Store access and refresh tokens
+        this.authService.storeTokens(response.access, response.refresh);
         this.router.navigate(['/home']);
       },
       error => {
