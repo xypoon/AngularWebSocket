@@ -1,5 +1,8 @@
 # Django WebSocket Project
 
+## Run Migrations
+
+
 ## Creating a Django User Account
 
 1. **Navigate to your project directory:**
@@ -41,3 +44,4 @@
     ```
 
 That's it! Your Django WebSocket application should now be up and running.
+

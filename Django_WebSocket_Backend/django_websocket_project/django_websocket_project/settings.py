@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders',
     'websocket_app',
+    'auth_app',
     'rest_framework_simplejwt',
 ]
 
