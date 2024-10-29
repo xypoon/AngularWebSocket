@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket Test</title>
+</head>
+<body>
+    <h1>WebSocket Test</h1>
+    <input type="text" id="bidAmount" placeholder="Enter bid amount">
+    <button id="sendBid">Send Bid</button>
+    <div id="bids"></div>
+
+    <script>
+        const property_id = "fa5bd8a3-64f4-49c1-8ece-95339fb373a8"; // Replace with the actual property ID
+        const bidSocket = new WebSocket(`ws://localhost:8000/ws/bid/${property_id}/`);
+
+        bidSocket.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            document.getElementById('bids').innerHTML += `<p>New bid: ${data.bid_amount}</p>`;
+        };
+
+        document.getElementById('sendBid').onclick = function() {
+            const bidAmount = document.getElementById('bidAmount').value;
+            bidSocket.send(JSON.stringify({'user_id': 1, 'bid_amount': bidAmount}));
+        };
+    </script>
+</body>
+</html>

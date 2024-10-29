@@ -77,7 +77,8 @@ Before running your Django application, you need to apply the database migration
 
 2. **Run the Django development server:**
     ```bash
-    python manage.py runserver
+    set DJANGO_SETTINGS_MODULE=django_websocket_project.settings
+    daphne django_websocket_project.asgi:application
     ```
 
 3. **Access the application in your web browser:**
