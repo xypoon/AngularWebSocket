@@ -36,7 +36,7 @@ class Migration(migrations.Migration):
                 ('start_time', models.DateTimeField()),
                 ('end_time', models.DateTimeField()),
                 ('reserve_price', models.DecimalField(decimal_places=2, max_digits=10)),
-                ('property', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='websocket_app.property')),
+                ('property', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='property_http_app.property')),
             ],
         ),
         migrations.CreateModel(
@@ -46,7 +46,7 @@ class Migration(migrations.Migration):
                 ('bid_amount', models.DecimalField(decimal_places=2, max_digits=10)),
                 ('bid_time', models.DateTimeField(auto_now_add=True)),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-                ('property', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='websocket_app.property')),
+                ('property', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='property_http_app.property')),
             ],
             options={
                 'unique_together': {('property', 'user', 'bid_time')},

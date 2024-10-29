@@ -9,7 +9,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('websocket_app', '0001_initial'),
+        ('property_http_app', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
@@ -30,7 +30,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='auction',
             name='property',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='auction', to='websocket_app.property'),
+            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='auction', to='property_http_app.property'),
         ),
         migrations.AlterField(
             model_name='auction',
@@ -45,7 +45,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='bid',
             name='property',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='bids', to='websocket_app.property'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='bids', to='property_http_app.property'),
         ),
         migrations.AlterField(
             model_name='bid',

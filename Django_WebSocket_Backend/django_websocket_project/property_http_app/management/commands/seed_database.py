@@ -1,7 +1,7 @@
 import uuid
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
-from websocket_app.models import Property, Bid, Auction  # Adjust the import based on your app name
+from property_http_app.models import Property, Bid, Auction  # Adjust the import based on your app name
 from decimal import Decimal
 from django.utils import timezone
 
