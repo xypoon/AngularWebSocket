@@ -1,10 +1,13 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuctionListComponent } from '../auction-list/auction-list.component';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  styleUrls: ['./home.component.css'],
+  standalone: true,
+  imports: [AuctionListComponent]
 })
 export class HomeComponent {
 

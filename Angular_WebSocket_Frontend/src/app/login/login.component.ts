@@ -18,6 +18,14 @@ export class LoginComponent {
 
   constructor(private http: HttpClient, private router: Router, private authService: AuthService) {}
 
+  ngOnInit(): void {
+    // Check if the user is authenticated
+    if (this.authService.isAuthenticated()) {
+      // If authenticated, redirect to home
+      this.router.navigate(['/home']);
+    }
+  }
+
   onSubmit() {
     // Log the loginData to check format before sending
     console.log("Submitting login data:", JSON.stringify(this.loginData));
@@ -31,6 +39,7 @@ export class LoginComponent {
     this.authService.login(this.loginData.username, this.loginData.password).subscribe(
       (response: any) => {
         // Store access and refresh tokens
+        console.log('Login response:', response);
         this.authService.storeTokens(response.access, response.refresh);
         this.router.navigate(['/home']);
       },

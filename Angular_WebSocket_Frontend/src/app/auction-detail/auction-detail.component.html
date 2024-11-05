@@ -1,0 +1,8 @@
+<div class="container mt-4" *ngIf="property">
+    <h2>{{ property.title }}</h2>
+    <img src="{{ property.image }}" class="img-fluid mb-3" alt="Property Image">
+    <p><strong>Starting Bid:</strong> ${{ property.startingBid }}</p>
+    <p><strong>Current Bid:</strong> ${{ property.currentBid }}</p>
+    <p><strong>Description:</strong> {{ property.description }}</p>
+    <a routerLink="/auctions" class="btn btn-secondary">Back to Listings</a>
+</div>

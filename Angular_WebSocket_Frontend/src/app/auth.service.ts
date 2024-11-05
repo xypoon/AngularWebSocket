@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { jwtDecode } from 'jwt-decode';
 
 
 @Injectable({
@@ -41,5 +42,21 @@ export class AuthService {
 
     // Optionally redirect to login page or homepage
     this.router.navigate(['/login']);
+  }
+
+  isAuthenticated(): boolean {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      try {
+        const decodedToken: any = jwtDecode(token);
+        const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
+        // Check if the token has expired
+        return decodedToken.exp > currentTime;
+      } catch (error) {
+        // Token is invalid
+        return false;
+      }
+    }
+    return false; // No token found
   }
 }
