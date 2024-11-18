@@ -38,3 +38,13 @@ class Auction(models.Model):
     def __str__(self):
         return f'Auction for {self.property.title} from {self.start_time} to {self.end_time}'
 
+# I need a table to record the latency of http requests, should story RequestType, StartTime, EndTime, Latency
+class RequestLatency(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    request_type = models.CharField(max_length=255, null=True, blank=True)
+    start_time = models.DateTimeField(auto_now_add=True)
+    end_time = models.DateTimeField(auto_now_add=True)
+    latency = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.request_type} latency: {self.latency}'

@@ -20,6 +20,8 @@ export class AuthService {
   storeTokens(access: string, refresh: string): void {
     localStorage.setItem('access_token', access);
     localStorage.setItem('refresh_token', refresh);
+    // post request to http://127.0.0.1:8000/api/property/latency to store dummy latency of login
+    this.http.post('http://localhost:8000/api/property/latency', { request_type: 'HTTP', startTime: Date.now(), endTime: Date.now() + 1, latency: 1 }).subscribe();
   }
 
   getAccessToken(): string | null {
@@ -33,13 +35,8 @@ export class AuthService {
   clearTokens(): void {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
-  }
 
-  logout() {
-    // Remove tokens from local storage
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-
+    console.log('Logged out');
     // Optionally redirect to login page or homepage
     this.router.navigate(['/login']);
   }

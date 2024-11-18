@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuctionListComponent } from '../auction-list/auction-list.component';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-home',
@@ -11,10 +12,9 @@ import { AuctionListComponent } from '../auction-list/auction-list.component';
 })
 export class HomeComponent {
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthService) {}
 
   logout() {
-    localStorage.removeItem('token');
-    this.router.navigate(['/login']);
+    this.authService.clearTokens();
   }
 }

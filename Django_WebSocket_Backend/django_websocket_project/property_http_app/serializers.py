@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Property, Bid, Auction
+from .models import Property, Bid, Auction, RequestLatency
 
 class PropertySerializer(serializers.ModelSerializer):
     class Meta:
@@ -45,4 +45,9 @@ class BidSerializer(serializers.ModelSerializer):
 class AuctionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Auction
+        fields = '__all__'
+
+class LatencyRecordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RequestLatency
         fields = '__all__'
