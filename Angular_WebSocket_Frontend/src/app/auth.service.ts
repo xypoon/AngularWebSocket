@@ -56,4 +56,24 @@ export class AuthService {
     }
     return false; // No token found
   }
+
+  refreshToken(): Observable<any> {
+    const refresh = this.getRefreshToken();
+    return this.http.post('http://localhost:8000/api/auth/token/refresh/', { refresh });
+  }
+  
+  refreshAndStoreToken(): void {
+    this.refreshToken().subscribe(
+      (response: any) => {
+        const { access, refresh } = response;
+        this.storeTokens(access, refresh);
+        console.log('Token refreshed');
+      },
+      (error) => {
+        console.error('Failed to refresh token', error);
+        this.clearTokens();
+        this.router.navigate(['/login']);
+      }
+    );
+  }
 }

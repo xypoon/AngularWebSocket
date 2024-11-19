@@ -1,8 +1,27 @@
+<!-- auction-detail.component.html -->
 <div class="container mt-4" *ngIf="property">
-    <h2>{{ property.title }}</h2>
-    <img src="{{ property.image }}" class="img-fluid mb-3" alt="Property Image">
-    <p><strong>Starting Bid:</strong> ${{ property.startingBid }}</p>
-    <p><strong>Current Bid:</strong> ${{ property.currentBid }}</p>
-    <p><strong>Description:</strong> {{ property.description }}</p>
-    <a routerLink="/auctions" class="btn btn-secondary">Back to Listings</a>
+  <h2>{{ property.title }}</h2>
+  <img src="{{ property.image }}" class="img-fluid mb-3" alt="Property Image">
+  <p><strong>Starting Bid:</strong> ${{ property.starting_price }}</p>
+  <p><strong>Current Bid:</strong> ${{ currentBid }}</p>
+  <p><strong>Description:</strong> {{ property.description }}</p>
+
+  <!-- Form to submit a bid -->
+  <div class="mt-4">
+    <h4>Place Your Bid</h4>
+    <form (ngSubmit)="submitBid()">
+      <div class="mb-3">
+        <label for="bidAmount" class="form-label">Your Bid Amount</label>
+        <input
+          type="number"
+          id="bidAmount"
+          class="form-control"
+          [(ngModel)]="bidAmount"
+          name="bidAmount"
+          required
+        />
+      </div>
+      <button type="submit" class="btn btn-primary">Submit Bid</button>
+    </form>
+  </div>
 </div>

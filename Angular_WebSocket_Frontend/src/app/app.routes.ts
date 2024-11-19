@@ -8,7 +8,7 @@ import { AuthGuard } from './auth.guard';
 export const appRoutes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard] },
-  { path: 'auctions', component: AuctionListComponent }, // List of available property auctions
-  { path: 'auction/:id', component: AuctionDetailComponent }, // Auction detail page
+  { path: 'auctions', component: AuctionListComponent, canActivate: [AuthGuard]  }, // List of available property auctions
+  { path: 'auction/:id', component: AuctionDetailComponent, canActivate: [AuthGuard]  }, // Auction detail page
   { path: '', redirectTo: '/login', pathMatch: 'full' }
 ];
