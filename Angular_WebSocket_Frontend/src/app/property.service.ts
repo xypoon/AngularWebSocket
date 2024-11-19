@@ -17,4 +17,12 @@ export class PropertyService {
   getPropertyById(id: string): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/properties/${id}`);
   }
+
+  getAuctions(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/auctions`);
+  }
+
+  getAuctionById(id: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/auctions/${id}`);
+  }
 }
