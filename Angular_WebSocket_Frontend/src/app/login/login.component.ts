@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';  // Import FormsModule for ngModel
 import { CommonModule } from '@angular/common';  // Import CommonModule for ngIf
 import { HttpClient } from '@angular/common/http';  // Import HttpClient
 import { Router } from '@angular/router';
-import { AuthService } from '../auth.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-login',
