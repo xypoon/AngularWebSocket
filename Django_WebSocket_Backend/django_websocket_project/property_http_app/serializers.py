@@ -31,10 +31,13 @@ class BidSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-        request = self.context.get('request')
-        user = request.user if request and request.user.is_authenticated else None
+        # Check for user in the context, fallback for WebSocket handling
+        user = self.context.get('user')  # For WebSocket
+        if not user and 'request' in self.context:
+            request = self.context['request']
+            user = request.user if request and request.user.is_authenticated else None
 
-        if not user:
+        if not user or not user.is_authenticated:
             raise serializers.ValidationError("User must be authenticated to place a bid.")
         
         property_instance = validated_data['property']
@@ -45,6 +48,7 @@ class BidSerializer(serializers.ModelSerializer):
 
         # Save the bid
         return Bid.objects.create(user=user, **validated_data)
+
 
     
 class AuctionSerializer(serializers.ModelSerializer):
