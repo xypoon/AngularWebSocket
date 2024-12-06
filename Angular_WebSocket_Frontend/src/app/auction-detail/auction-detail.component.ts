@@ -7,6 +7,7 @@ import { Subscription, interval } from 'rxjs';
 import { BiddingService } from '../services/bidding-http.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../services/auth.service';
+import { MeasurementService } from '../services/measurement.service';
 
 @Component({
   selector: 'app-auction-detail',
@@ -27,7 +28,8 @@ export class AuctionDetailComponent implements OnInit, OnDestroy {
     private biddingService: BiddingService,
     private cdr: ChangeDetectorRef ,
     private snackBar: MatSnackBar,
-    private authService: AuthService
+    private authService: AuthService,
+    private measurementService: MeasurementService
   ) {}
 
   ngOnInit(): void {
@@ -62,6 +64,7 @@ export class AuctionDetailComponent implements OnInit, OnDestroy {
 
       this.biddingService.submitBid(bidData).subscribe(
         (response) => {
+          this.measurementService.endRecording('HTTP');
           this.snackBar.open('Bid submitted successfully!', 'Close', {
             duration: 3000,
             verticalPosition: 'top',

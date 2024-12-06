@@ -11,7 +11,7 @@ import { jwtDecode } from 'jwt-decode';
 })
 export class AuthService {
   private apiUrl = 'http://localhost:8000/api/auth/token/';
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router) { }
 
   login(username: string, password: string): Observable<any> {
     return this.http.post(this.apiUrl, { username, password });
@@ -20,8 +20,6 @@ export class AuthService {
   storeTokens(access: string, refresh: string): void {
     localStorage.setItem('access_token', access);
     localStorage.setItem('refresh_token', refresh);
-    // post request to http://127.0.0.1:8000/api/property/latency to store dummy latency of login
-    this.http.post('http://localhost:8000/api/property/latency', { request_type: 'HTTP', startTime: Date.now(), endTime: Date.now() + 1, latency: 1 }).subscribe();
   }
 
   getAccessToken(): string | null {
@@ -61,7 +59,7 @@ export class AuthService {
     const refresh = this.getRefreshToken();
     return this.http.post('http://localhost:8000/api/auth/token/refresh/', { refresh });
   }
-  
+
   refreshAndStoreToken(): void {
     this.refreshToken().subscribe(
       (response: any) => {

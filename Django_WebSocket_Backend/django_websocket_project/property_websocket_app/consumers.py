@@ -1,3 +1,4 @@
+import datetime
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import sync_to_async
@@ -84,6 +85,7 @@ class BidConsumer(AsyncWebsocketConsumer):
         from property_http_app.models import Property
         from property_http_app.serializers import BidSerializer
 
+        server_ts = datetime.now().isoformat()
         text_data_json = json.loads(text_data)
         bid_amount = text_data_json.get('bid_amount')
         # user_id = text_data_json.get('user_id')
@@ -108,12 +110,17 @@ class BidConsumer(AsyncWebsocketConsumer):
             property_instance.current_price = bid_amount
             await sync_to_async(property_instance.save)()  # Save the property asynchronously
 
+             # Record the server acknowledgment timestamp
+            server_ack_ts = datetime.now().isoformat()
+
             # Send updated bids to the group
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {
                     'type': 'send_bid',
                     'bid_amount': bid_amount,
+                    'server_ts': server_ts,
+                    'server_ack_ts': server_ack_ts,
                 }
             )
         else:
