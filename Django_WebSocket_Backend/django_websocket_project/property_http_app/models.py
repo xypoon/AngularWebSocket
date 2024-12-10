@@ -10,7 +10,6 @@ class Property(models.Model):
     starting_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     current_price = models.DecimalField(max_digits=10, decimal_places=2, default=0, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     is_active = models.BooleanField(default=True)
 
 

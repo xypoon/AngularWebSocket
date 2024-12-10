@@ -10,8 +10,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         # Create some users
-        user1 = User.objects.create_user(username='user1', password='password123')
-        user2 = User.objects.create_user(username='user2', password='password123')
+        # user1 = User.objects.create_user(username='user', password='password')
+        # user1 = User.objects.create_user(username='user1', password='password123')
+        # user2 = User.objects.create_user(username='user2', password='password456')
+        # user2 = User.objects.create_user(username='user3', password='password789')
 
         # Create properties
         property1 = Property.objects.create(
@@ -20,7 +22,6 @@ class Command(BaseCommand):
             location='California',
             starting_price=Decimal('1000000.00'),
             current_price=Decimal('1000000.00'),
-            owner=user1,
             is_active=True
         )
 
@@ -30,14 +31,13 @@ class Command(BaseCommand):
             location='Oregon',
             starting_price=Decimal('300000.00'),
             current_price=Decimal('300000.00'),
-            owner=user2,
             is_active=True
         )
 
         # Create bids
-        Bid.objects.create(property=property1, user=user2, bid_amount=Decimal('1050000.00'))
-        Bid.objects.create(property=property1, user=user1, bid_amount=Decimal('1100000.00'))
-        Bid.objects.create(property=property2, user=user1, bid_amount=Decimal('320000.00'))
+        # Bid.objects.create(property=property1, user=user2, bid_amount=Decimal('1050000.00'))
+        # Bid.objects.create(property=property1, user=user1, bid_amount=Decimal('1100000.00'))
+        # Bid.objects.create(property=property2, user=user1, bid_amount=Decimal('320000.00'))
 
         # Create auctions
         Auction.objects.create(
