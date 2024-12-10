@@ -1,6 +1,8 @@
 from rest_framework.exceptions import ValidationError
 from rest_framework import serializers
 from .models import Property, Bid, Auction, RequestLatency
+from django.conf import settings
+from django.contrib.auth.models import User  # Update if you use a custom User model
 
 class PropertySerializer(serializers.ModelSerializer):
     class Meta:
@@ -32,18 +34,21 @@ class BidSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         # toggle bypass jwt authentication
-        if (True) {
-            
-        }
-        # Check for user in the context, fallback for WebSocket handling
-        user = self.context.get('user')  # For WebSocket
-        if not user and 'request' in self.context:
-            request = self.context['request']
-            user = request.user if request and request.user.is_authenticated else None
+        if settings.BYPASS_JWT_AUTH:
+            # Use a dummy user instance
+            dummy_user, _ = User.objects.get_or_create(username="dummy_user", defaults={"email": "dummy@example.com"})
+            user = dummy_user
 
-        if not user or not user.is_authenticated:
-            raise serializers.ValidationError("User must be authenticated to place a bid.")
-        
+        else:
+            # Check for user in the context, fallback for WebSocket handling
+            user = self.context.get('user')  # For WebSocket
+            if not user and 'request' in self.context:
+                request = self.context['request']
+                user = request.user if request and request.user.is_authenticated else None
+
+            if not user or not user.is_authenticated:
+                raise serializers.ValidationError("User must be authenticated to place a bid.")
+    
         property_instance = validated_data['property']
 
         # Update property's current price

@@ -4,7 +4,9 @@ from .serializers import PropertySerializer, BidSerializer, AuctionSerializer, L
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from django.conf import settings
+from django.contrib.auth.models import User  # Update if you use a custom User model
 
 class PropertyViewSet(viewsets.ModelViewSet):
     queryset = Property.objects.all()
@@ -13,11 +15,23 @@ class PropertyViewSet(viewsets.ModelViewSet):
 class BidViewSet(viewsets.ModelViewSet):
     queryset = Bid.objects.all()
     serializer_class = BidSerializer
-    permission_classes = [IsAuthenticated]
+    def get_permissions(self):
+        if settings.BYPASS_JWT_AUTH:
+            # Allow any user to access the view if bypassing authentication
+            return [AllowAny()]
+        # Enforce authentication otherwise
+        return [IsAuthenticated()]
 
     def create(self, request, *args, **kwargs):
+        if settings.BYPASS_JWT_AUTH:
+            # Use a dummy user instance
+            dummy_user, _ = User.objects.get_or_create(username="dummy_user", defaults={"email": "dummy@example.com"})
+            user = dummy_user
+        else:
+            user = request.user
+
         data = request.data.copy()
-        data['user'] = request.user.id
+        data['user'] = user.id if user else None
 
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)

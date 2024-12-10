@@ -1,0 +1,2 @@
+# rename file to .env for usage
+BYPASS_JWT_AUTHENTICATION=False

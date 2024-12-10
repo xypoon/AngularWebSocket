@@ -57,7 +57,7 @@ export class AuctionDetailWsComponent implements OnInit, OnDestroy  {
           console.log('Received new bid:', message.bid_amount);
           console.log(message);
           this.measurementService.endWebSocketRecording('WebSocket', message);
-          this.currentBid = message.current_price;
+          this.currentBid = message.bid_amount;
           this.cdr.detectChanges(); // Trigger change detection
         }
       },
