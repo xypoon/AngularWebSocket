@@ -44,6 +44,7 @@ export class AuctionDetailWsComponent implements OnInit, OnDestroy  {
     // Subscribe to incoming messages
     this.wsSubscription = this.biddingWsService.onMessage().subscribe(
       (message) => {
+        this.measurementService.setWebSocketEndTime();
         if (message.type === 'init') {
           // Initialize property details
           this.property = message.property;
@@ -51,8 +52,11 @@ export class AuctionDetailWsComponent implements OnInit, OnDestroy  {
           this.cdr.detectChanges(); // Trigger change detection
           console.log('Property details initialized:', this.property);
           console.log('Current bid:', this.currentBid);
-        } else if (message.type === 'bid_update') {
+        } else{
           // Update the current bid
+          console.log('Received new bid:', message.bid_amount);
+          console.log(message);
+          this.measurementService.endWebSocketRecording('WebSocket', message);
           this.currentBid = message.current_price;
           this.cdr.detectChanges(); // Trigger change detection
         }
@@ -76,6 +80,7 @@ export class AuctionDetailWsComponent implements OnInit, OnDestroy  {
       console.log(bidData);
 
       // Send bid through WebSocket
+      this.measurementService.startWebSocketRecording();
       this.biddingWsService.sendMessage(bidData);
       this.snackBar.open('Bid submitted successfully!', 'Close', {
         duration: 3000,

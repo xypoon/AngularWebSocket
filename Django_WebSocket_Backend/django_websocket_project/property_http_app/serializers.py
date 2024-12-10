@@ -31,6 +31,10 @@ class BidSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
+        # toggle bypass jwt authentication
+        if (True) {
+            
+        }
         # Check for user in the context, fallback for WebSocket handling
         user = self.context.get('user')  # For WebSocket
         if not user and 'request' in self.context:

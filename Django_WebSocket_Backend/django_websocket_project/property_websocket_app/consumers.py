@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import sync_to_async
@@ -131,8 +131,13 @@ class BidConsumer(AsyncWebsocketConsumer):
 
     async def send_bid(self, event):
         bid_amount = event['bid_amount']
+        server_ts = event['server_ts']
+        server_ack_ts = event['server_ack_ts']
         
-        # Send message to WebSocket
+        # Send the full message to WebSocket
         await self.send(text_data=json.dumps({
+            'type': 'send_bid',
             'bid_amount': bid_amount,
+            'server_ts': server_ts,
+            'server_ack_ts': server_ack_ts,
         }))

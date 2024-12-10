@@ -26,11 +26,11 @@ export class AuctionDetailComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private propertyService: PropertyService,
     private biddingService: BiddingService,
-    private cdr: ChangeDetectorRef ,
+    private cdr: ChangeDetectorRef,
     private snackBar: MatSnackBar,
     private authService: AuthService,
     private measurementService: MeasurementService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const propertyId = this.route.snapshot.paramMap.get('id');
@@ -41,11 +41,25 @@ export class AuctionDetailComponent implements OnInit, OnDestroy {
   }
 
   fetchProperty(propertyId: string): void {
+    const startTime = performance.now(); // Start time for the request
+
     this.propertyService.getPropertyById(propertyId).subscribe(
       (data) => {
+        const endTime = performance.now(); // End time for the request
         this.property = data;
         this.currentBid = data.current_price;
         this.cdr.detectChanges();  // Trigger change detection
+
+        // Measure the data size in bytes
+        const dataSize = new TextEncoder().encode(JSON.stringify(data)).length;
+
+        // Calculate the time taken for the request in seconds
+        const timeTaken = (endTime - startTime) / 1000; // Convert to seconds
+
+        // Calculate the bandwidth usage in bytes per second (Bps)
+        const bandwidthUsage = dataSize / timeTaken;
+
+        console.log(`Bandwidth usage: ${bandwidthUsage.toFixed(2)} bytes/second`);
       },
       (error) => console.error('Error fetching property:', error)
     );
@@ -62,6 +76,7 @@ export class AuctionDetailComponent implements OnInit, OnDestroy {
         bid_amount: this.bidAmount
       };
 
+      this.measurementService.startRecording();
       this.biddingService.submitBid(bidData).subscribe(
         (response) => {
           this.measurementService.endRecording('HTTP');
@@ -89,11 +104,29 @@ export class AuctionDetailComponent implements OnInit, OnDestroy {
   }
 
   startPolling(propertyId: string): void {
-    this.pollSubscription = interval(3000).subscribe(() => {
+    let startTime = performance.now(); // Start time for polling
+
+    this.pollSubscription = interval(500).subscribe(() => {
       this.propertyService.getPropertyById(propertyId).subscribe(
         (data) => {
+          const endTime = performance.now(); // End time for polling
           this.currentBid = data.current_price;
           this.cdr.detectChanges();  // Trigger change detection
+
+          // Measure the data size in bytes
+          const dataSize = new TextEncoder().encode(JSON.stringify(data)).length;
+
+          // Calculate the time taken for the request in seconds
+          const timeTaken = (endTime - startTime) / 1000; // Convert to seconds
+
+          // Calculate the bandwidth usage in bytes per second (Bps)
+          const bandwidthUsage = dataSize / timeTaken;
+
+          console.log(`Polling Bandwidth usage: ${bandwidthUsage.toFixed(2)} bytes/second`);
+
+          // Reset start time for the next polling interval
+          startTime = endTime;
+
         },
         (error) => console.error('Error polling property:', error)
       );

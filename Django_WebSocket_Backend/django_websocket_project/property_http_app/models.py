@@ -44,7 +44,7 @@ class RequestLatency(models.Model):
     request_type = models.CharField(max_length=255, null=True, blank=True)
     start_time = models.DateTimeField(auto_now_add=True)
     end_time = models.DateTimeField(auto_now_add=True)
-    latency = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    latency = models.DecimalField(max_digits=15, decimal_places=6, null=True, blank=True)
 
     def __str__(self):
         return f'{self.request_type} latency: {self.latency}'
