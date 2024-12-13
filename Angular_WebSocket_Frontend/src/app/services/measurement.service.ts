@@ -8,13 +8,20 @@ import { HttpClient } from '@angular/common/http';
 export class MeasurementService {
   private startTime: number | null = null;
   private records: string[] = ["RequestType,StartTime,EndTime,Latency"];
-  private apiUrl: string = 'http://localhost:8000/api/property/latency';
+  //private apiUrl: string = 'http://localhost:8000/api/property/latency';
+  private apiUrl: string;
 
   // WebSocket Time Measurement
   private client_ts: number | null = null;
   private client_ack_ts: number | null = null;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) { 
+    const protocol = window.location.protocol; // "http:" or "https:"
+    const host = window.location.hostname; // e.g., "localhost"
+    const apiPort = protocol === 'https:' ? 443 : 8000; // Replace with your backend's TLS and non-TLS ports
+    this.apiUrl = `${protocol}//${host}:${apiPort}/api/property/latency`;
+    console.log('Measurement Service API Endpoint:', this.apiUrl); // For debugging
+  }
 
   // Start timing the request
   startRecording() {

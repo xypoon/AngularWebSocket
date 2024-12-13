@@ -1,27 +1,73 @@
-# AngularWebSocketFrontend
+## Getting Started with Angular Frontend
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.9.
+To get your Angular frontend application up and running, follow these steps:
 
-## Development server
+1. **Install Angular CLI:**
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+    First, you need to install Angular CLI globally on your machine. Open your terminal and run the following command:
 
-## Code scaffolding
+    ```sh
+    npm install -g @angular/cli
+    ```
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+2. **Navigate to Project Directory:**
 
-## Build
+    Change your directory to the newly created Angular project:
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+    ```sh
+    cd Angular_WebSocket_Frontend
+    ```
 
-## Running unit tests
+3. **Install necessary packages:**
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+    Change your directory to the newly created Angular project:
 
-## Running end-to-end tests
+    ```sh
+    cd npm install
+    ```
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+4. **Serve the Application:**
 
-## Further help
+    Start the development server by running the following command:
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+    ```sh
+    ng serve
+    ```
+
+    By default, the application will be served at `http://localhost:4200/`. Open this URL in your web browser to see your running Angular application.
+
+By following these steps, you will have a basic Angular frontend application up and running.
+
+## Configuring Angular to Use the SSL Certificate
+
+To configure your Angular application to use the self-signed SSL certificate, you need to modify the `angular.json` file and update the `ng serve` command.
+
+1. **Modify `angular.json`:**
+
+    Open the `angular.json` file in your project and locate the `serve` options for your project. Add the `ssl`, `sslKey`, and `sslCert` options to the configuration:
+
+    ```json
+    "serve": {
+        "options": {
+        "ssl": true,
+        "sslKey": "cert/localhost.key",
+        "sslCert": "cert/localhost.crt",
+        }
+    }
+    ```
+
+2. **Toggle SSL Usage:**
+
+    To toggle between using the SSL certificate or not, you can use Angular CLI command options. By default, the above configuration will enable SSL. To disable SSL, you can run the `ng serve` command with the `--ssl` option set to `false`:
+
+    ```sh
+    ng serve --ssl=false
+    ```
+
+    If you want to enable SSL explicitly, you can run:
+
+    ```sh
+    ng serve --ssl=true
+    ```
+
+By following these steps, you can configure your Angular application to use the self-signed SSL certificate and easily toggle SSL usage as needed.

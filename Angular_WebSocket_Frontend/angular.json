@@ -69,7 +69,7 @@
             }
           },
           "options": {
-            "ssl": true,
+            "ssl": false,
             "sslKey": "../cert/localhost.key",
             "sslCert": "../cert/localhost.crt"
           },

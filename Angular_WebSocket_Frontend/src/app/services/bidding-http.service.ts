@@ -8,9 +8,16 @@ import { MeasurementService } from './measurement.service';
   providedIn: 'root',
 })
 export class BiddingService {
-  private apiUrl = 'http://localhost:8000/api/property/bids/';
+  //private apiUrl = 'http://localhost:8000/api/property/bids/';
+  private apiUrl: string;
 
-  constructor(private http: HttpClient, private measurementService : MeasurementService) {}
+  constructor(private http: HttpClient, private measurementService : MeasurementService) {
+    const protocol = window.location.protocol; // "http:" or "https:"
+    const host = window.location.hostname; // e.g., "localhost"
+    const apiPort = protocol === 'https:' ? 443 : 8000; // Replace with your backend's TLS and non-TLS ports
+    this.apiUrl = `${protocol}//${host}:${apiPort}/api/property/bids/`;
+    console.log('Bid HTTP API Endpoint:', this.apiUrl); // For debugging
+  }
 
   submitBid(bid: Partial<Bid>): Observable<Bid> {
     const headers = new HttpHeaders({

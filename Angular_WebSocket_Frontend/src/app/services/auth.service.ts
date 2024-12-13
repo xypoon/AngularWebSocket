@@ -10,8 +10,16 @@ import { jwtDecode } from 'jwt-decode';
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:8000/api/auth/token/';
-  constructor(private http: HttpClient, private router: Router) { }
+  //private apiUrl = 'http://localhost:8000/api/auth/token/';
+  private apiUrl: string;
+
+  constructor(private http: HttpClient, private router: Router) { 
+    const protocol = window.location.protocol; // "http:" or "https:"
+    const host = window.location.hostname; // e.g., "localhost"
+    const apiPort = protocol === 'https:' ? 443 : 8000; // Replace with your backend's TLS and non-TLS ports
+    this.apiUrl = `${protocol}//${host}:${apiPort}/api/auth/token/`;
+    console.log('Auth API Endpoint:', this.apiUrl); // For debugging
+  }
 
   login(username: string, password: string): Observable<any> {
     return this.http.post(this.apiUrl, { username, password });

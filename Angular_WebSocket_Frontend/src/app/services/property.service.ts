@@ -6,9 +6,16 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class PropertyService {
-  private apiUrl = 'http://localhost:8000/api/property';
+  //private apiUrl = 'http://localhost:8000/api/property';
+  private apiUrl: string;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    const protocol = window.location.protocol; // "http:" or "https:"
+    const host = window.location.hostname; // e.g., "localhost"
+    const apiPort = protocol === 'https:' ? 443 : 8000; // Replace with your backend's TLS and non-TLS ports
+    this.apiUrl = `${protocol}//${host}:${apiPort}/api/property`;
+    console.log('Property API Endpoint:', this.apiUrl); // For debugging
+  }
 
   getProperties(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/properties`);
