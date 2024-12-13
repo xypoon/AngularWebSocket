@@ -68,6 +68,11 @@
               "buildTarget": "Angular_WebSocket_Frontend:build:development"
             }
           },
+          "options": {
+            "ssl": true,
+            "sslKey": "../cert/localhost.key",
+            "sslCert": "../cert/localhost.crt"
+          },
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
