@@ -26,7 +26,7 @@ class BidSerializer(serializers.ModelSerializer):
 
         if data['bid_amount'] <= property_instance.current_price:
             raise ValidationError(
-                f"The bid amount must be greater than the current price of {property_instance.current_price}."
+                f"The bid amount {data['bid_amount']} must be greater than the current price of {property_instance.current_price}."
             )
 
         data['property'] = property_instance

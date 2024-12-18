@@ -17,25 +17,29 @@ class BidConsumer(AsyncWebsocketConsumer):
         query_string = self.scope['query_string'].decode()
         query_params = parse_qs(query_string)
         token = query_params.get('token', [None])[0]
-
-        if token is None:
-            logger.error("No token provided in query parameters")
-            await self.close(code=4003)
-            return
-
+ 
         try:
-            logger.debug(f"Token received: {token}")
-            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
-            logger.debug(f"Token payload: {payload}")
-
-            user = await sync_to_async(User.objects.get)(id=payload['user_id'])
-            self.scope['user'] = user
-            logger.debug(f"User authenticated: {user.username}")
+            if settings.BYPASS_JWT_AUTH or token is None:
+                # Bypass authentication and use a dummy user
+                logger.debug("Bypassing authentication - Using dummy user")
+                dummy_user, _ = await sync_to_async(User.objects.get_or_create)(
+                    username="dummy_user", defaults={"email": "dummy@example.com"}
+                )
+                self.scope['user'] = dummy_user
+            else:
+                # Authenticate with the provided token
+                logger.debug(f"Token received: {token}")
+                payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+                logger.debug(f"Token payload: {payload}")
+                user = await sync_to_async(User.objects.get)(id=payload['user_id'])
+                self.scope['user'] = user
+                logger.debug(f"User authenticated: {user.username}")
 
             self.property_id = self.scope['url_route']['kwargs']['property_id']
             self.room_group_name = f'bid_{self.property_id}'
             logger.debug(f"Joining room group: {self.room_group_name}")
 
+            # Add the user to the room group
             await self.channel_layer.group_add(
                 self.room_group_name,
                 self.channel_name
@@ -44,6 +48,7 @@ class BidConsumer(AsyncWebsocketConsumer):
             await self.accept()
             logger.debug("WebSocket connection accepted")
 
+            # Send initial property data
             property = await sync_to_async(Property.objects.get)(id=self.property_id)
             initial_data = {
                 'type': 'init',

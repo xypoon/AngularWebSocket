@@ -11,9 +11,10 @@
     <div id="bids"></div>
 
     <script>
-        const property_id = "fa5bd8a3-64f4-49c1-8ece-95339fb373a8"; // Replace with the actual property ID
-        const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMwNjkzNTA1LCJpYXQiOjE3MzA2ODk2MTAsImp0aSI6ImMyZjJjMDJhZGQxYTQ5MGI5YjcwZGFiZjRiYTEzNmU1IiwidXNlcl9pZCI6MX0.tHB9Po64XkF1eV26Sy4J2ysJf_zYhjK5CnpYL03DXnI"; // Replace with the actual token
-        const bidSocket = new WebSocket(`ws://localhost:8000/ws/bid/${property_id}/?token=${token}`);
+        const property_id = "efe3e9480b1d46e2b1073a1e27bd0817"; // Replace with the actual property ID
+        //const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMwNjkzNTA1LCJpYXQiOjE3MzA2ODk2MTAsImp0aSI6ImMyZjJjMDJhZGQxYTQ5MGI5YjcwZGFiZjRiYTEzNmU1IiwidXNlcl9pZCI6MX0.tHB9Po64XkF1eV26Sy4J2ysJf_zYhjK5CnpYL03DXnI"; // Replace with the actual token
+        const token ="";
+        const bidSocket = new WebSocket(`wss://localhost:443/ws/bid/${property_id}/?token=${token}`);
 
         bidSocket.onmessage = function(event) {
             const data = JSON.parse(event.data);
