@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
-import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
+import { Observable } from 'rxjs';
+import { WebSocketSubject, WebSocketSubjectConfig } from 'rxjs/webSocket';
 import { AuthService } from './auth.service';
 
 @Injectable({
@@ -10,7 +10,6 @@ export class BiddingWsService {
 
   private socket$!: WebSocketSubject<any>;
 
-  //private readonly WS_URL = 'ws://localhost:8000/ws/bid/';
   private WS_URL: string;
   private token: string;
 
@@ -18,20 +17,48 @@ export class BiddingWsService {
     this.token = this.authService.getAccessToken() || '';
     const protocol = window.location.protocol; // "http:" or "https:"
     const host = window.location.hostname; // e.g., "localhost"
-    // Use wss:// for HTTPS (secure) and ws:// for HTTP (non-secure)
     const wsProtocol = protocol === 'https:' ? 'wss:' : 'ws:';
-
-    // Define the WebSocket URL dynamically based on the protocol
     const apiPort = protocol === 'https:' ? 443 : 8000; // Replace with your backend's TLS and non-TLS ports
     this.WS_URL = `${wsProtocol}//${host}:${apiPort}/ws/bid/`;
 
     console.log("WebSocket URL: ", this.WS_URL);
   }
 
+  // Create a custom WebSocketSubject with binaryType set to 'arraybuffer'
+  private createWebSocketSubject(url: string): WebSocketSubject<any> {
+    const config: WebSocketSubjectConfig<any> = {
+      url: url,
+      openObserver: {
+        next: () => {
+          console.log('WebSocket connection established');
+        }
+      },
+      closeObserver: {
+        next: () => {
+          console.log('WebSocket connection closed');
+        }
+      },
+      binaryType: 'arraybuffer', // Set binaryType to 'arraybuffer'
+      deserializer: (e: MessageEvent) => {
+        if (e.data instanceof ArrayBuffer) {
+          return e.data;
+        } else {
+          return JSON.parse(e.data);
+        }
+      }
+    };
+
+    const socket = new WebSocket(url);
+    socket.binaryType = 'arraybuffer';
+
+    return new WebSocketSubject(config);
+  }
+
   // Connect to the WebSocket server
-  connect(property : string): void {
+  connect(property: string): void {
     if (!this.socket$ || this.socket$.closed) {
-      this.socket$ = webSocket(this.WS_URL + property + '/?token=' + this.token);
+      const url = this.WS_URL + property + '/?token=' + this.token;
+      this.socket$ = this.createWebSocketSubject(url);
     }
   }
 

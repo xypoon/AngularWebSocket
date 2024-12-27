@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import { MeasurementService } from '../services/measurement.service';
 import { BiddingWsService } from '../services/bidding-ws.service';
+import * as pako from 'pako';
 
 @Component({
   selector: 'app-auction-detail-ws',
@@ -15,7 +16,7 @@ import { BiddingWsService } from '../services/bidding-ws.service';
   templateUrl: './auction-detail-ws.component.html',
   styleUrl: './auction-detail-ws.component.css'
 })
-export class AuctionDetailWsComponent implements OnInit, OnDestroy  {
+export class AuctionDetailWsComponent implements OnInit, OnDestroy {
   property: any;
   currentBid: number = 0;
   bidAmount: number = 0;
@@ -28,7 +29,7 @@ export class AuctionDetailWsComponent implements OnInit, OnDestroy  {
     private snackBar: MatSnackBar,
     private authService: AuthService,
     private measurementService: MeasurementService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const propertyId = this.route.snapshot.paramMap.get('id');
@@ -43,21 +44,25 @@ export class AuctionDetailWsComponent implements OnInit, OnDestroy  {
 
     // Subscribe to incoming messages
     this.wsSubscription = this.biddingWsService.onMessage().subscribe(
-      (message) => {
+      (message: ArrayBuffer) => {
+        const byteArray = new Uint8Array(message);
+        const decompressedData = pako.ungzip(byteArray, { to: 'string' });
+        console.log('Received message:', decompressedData);
+        let messageJSON = JSON.parse(decompressedData);
         this.measurementService.setWebSocketEndTime();
-        if (message.type === 'init') {
+        if (messageJSON.type === 'init') {
           // Initialize property details
-          this.property = message.property;
-          this.currentBid = message.property.current_price;
+          this.property = messageJSON.property;
+          this.currentBid = messageJSON.property.current_price;
           this.cdr.detectChanges(); // Trigger change detection
           console.log('Property details initialized:', this.property);
           console.log('Current bid:', this.currentBid);
-        } else{
+        } else {
           // Update the current bid
-          console.log('Received new bid:', message.bid_amount);
-          console.log(message);
-          this.measurementService.endWebSocketRecording('WebSocket', message);
-          this.currentBid = message.bid_amount;
+          console.log('Received new bid:', messageJSON.bid_amount);
+          console.log(messageJSON);
+          this.measurementService.endWebSocketRecording('WebSocket', messageJSON);
+          this.currentBid = messageJSON.bid_amount;
           this.cdr.detectChanges(); // Trigger change detection
         }
       },

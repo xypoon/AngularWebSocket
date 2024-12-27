@@ -75,7 +75,7 @@ export class AuctionDetailComponent implements OnInit, OnDestroy {
         property: this.property?.id,
         bid_amount: this.bidAmount
       };
-
+      this.bidAmount = bidData.bid_amount;
       this.measurementService.startRecording();
       this.biddingService.submitBid(bidData).subscribe(
         (response) => {
@@ -122,7 +122,7 @@ export class AuctionDetailComponent implements OnInit, OnDestroy {
           // Calculate the bandwidth usage in bytes per second (Bps)
           const bandwidthUsage = dataSize / timeTaken;
 
-          console.log(`Polling Bandwidth usage: ${bandwidthUsage.toFixed(2)} bytes/second`);
+          // console.log(`Polling Bandwidth usage: ${bandwidthUsage.toFixed(2)} bytes/second`);
 
           // Reset start time for the next polling interval
           startTime = endTime;

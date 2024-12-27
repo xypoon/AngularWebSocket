@@ -6,9 +6,12 @@ from urllib.parse import parse_qs
 import jwt
 from django.conf import settings
 import logging
+import gzip
+import base64
 
 # Configure logging for debugging
 logger = logging.getLogger(__name__)
+
 
 class BidConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -17,7 +20,7 @@ class BidConsumer(AsyncWebsocketConsumer):
         query_string = self.scope['query_string'].decode()
         query_params = parse_qs(query_string)
         token = query_params.get('token', [None])[0]
- 
+
         try:
             if settings.BYPASS_JWT_AUTH or token is None:
                 # Bypass authentication and use a dummy user
@@ -29,7 +32,8 @@ class BidConsumer(AsyncWebsocketConsumer):
             else:
                 # Authenticate with the provided token
                 logger.debug(f"Token received: {token}")
-                payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+                payload = jwt.decode(
+                    token, settings.SECRET_KEY, algorithms=['HS256'])
                 logger.debug(f"Token payload: {payload}")
                 user = await sync_to_async(User.objects.get)(id=payload['user_id'])
                 self.scope['user'] = user
@@ -61,7 +65,21 @@ class BidConsumer(AsyncWebsocketConsumer):
                     'current_price': str(property.current_price),
                 }
             }
-            await self.send(text_data=json.dumps(initial_data))
+            # Convert the data to JSON and compress using gzip
+            json_data = json.dumps(initial_data)
+            compressed_data = gzip.compress(json_data.encode('utf-8'))
+
+            # # Base64 encode the compressed data to send as a string
+            # base64_compressed_data = base64.b64encode(compressed_data).decode('utf-8')
+
+            # reformat the json
+            # base64_compressed_data = {
+            #     'data': compressed_data
+            # }
+
+            # Send the base64-encoded compressed data over WebSocket
+            # await self.send(text_data=json.dumps(base64_compressed_data))
+            await self.send(bytes_data=compressed_data)
             logger.debug("Initial property details sent")
 
         except jwt.ExpiredSignatureError:
@@ -81,7 +99,7 @@ class BidConsumer(AsyncWebsocketConsumer):
             await self.close(code=4006)
 
     async def disconnect(self, close_code):
-         # Check if room_group_name was set
+        # Check if room_group_name was set
         if hasattr(self, 'room_group_name'):
             # Leave room group
             await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
@@ -105,17 +123,19 @@ class BidConsumer(AsyncWebsocketConsumer):
 
         # Validate and save the bid
         bid_serializer = BidSerializer(data=bid_data, context={'user': user})
-        
+
         # Use sync_to_async for validation and save
         if await sync_to_async(bid_serializer.is_valid)():
-            bid = await sync_to_async(bid_serializer.save)()  # Save bid asynchronously
+            # Save bid asynchronously
+            bid = await sync_to_async(bid_serializer.save)()
 
             # Update the property's current price
             property_instance = await sync_to_async(Property.objects.get)(id=self.property_id)
             property_instance.current_price = bid_amount
-            await sync_to_async(property_instance.save)()  # Save the property asynchronously
+            # Save the property asynchronously
+            await sync_to_async(property_instance.save)()
 
-             # Record the server acknowledgment timestamp
+            # Record the server acknowledgment timestamp
             server_ack_ts = datetime.now().isoformat()
 
             # Send updated bids to the group
@@ -138,11 +158,24 @@ class BidConsumer(AsyncWebsocketConsumer):
         bid_amount = event['bid_amount']
         server_ts = event['server_ts']
         server_ack_ts = event['server_ack_ts']
-        
-        # Send the full message to WebSocket
-        await self.send(text_data=json.dumps({
+
+        data = {
             'type': 'send_bid',
             'bid_amount': bid_amount,
             'server_ts': server_ts,
             'server_ack_ts': server_ack_ts,
-        }))
+        }
+        json_data = json.dumps(data)
+        compressed_data = gzip.compress(json_data.encode('utf-8'))
+
+        # Base64 encode the compressed data to send as a string
+        # base64_compressed_data = base64.b64encode(compressed_data).decode('utf-8')
+
+        # reformat the json
+        # data = {
+        #     'data': compressed_data
+        # }
+
+        # Send the full message to WebSocket
+        # await self.send(text_data=json.dumps(data))
+        await self.send(bytes_data=compressed_data)
