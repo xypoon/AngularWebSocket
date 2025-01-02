@@ -12,7 +12,6 @@ import base64
 # Configure logging for debugging
 logger = logging.getLogger(__name__)
 
-
 class BidConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         from property_http_app.models import User, Property
@@ -69,16 +68,6 @@ class BidConsumer(AsyncWebsocketConsumer):
             json_data = json.dumps(initial_data)
             compressed_data = gzip.compress(json_data.encode('utf-8'))
 
-            # # Base64 encode the compressed data to send as a string
-            # base64_compressed_data = base64.b64encode(compressed_data).decode('utf-8')
-
-            # reformat the json
-            # base64_compressed_data = {
-            #     'data': compressed_data
-            # }
-
-            # Send the base64-encoded compressed data over WebSocket
-            # await self.send(text_data=json.dumps(base64_compressed_data))
             await self.send(bytes_data=compressed_data)
             logger.debug("Initial property details sent")
 
@@ -168,14 +157,4 @@ class BidConsumer(AsyncWebsocketConsumer):
         json_data = json.dumps(data)
         compressed_data = gzip.compress(json_data.encode('utf-8'))
 
-        # Base64 encode the compressed data to send as a string
-        # base64_compressed_data = base64.b64encode(compressed_data).decode('utf-8')
-
-        # reformat the json
-        # data = {
-        #     'data': compressed_data
-        # }
-
-        # Send the full message to WebSocket
-        # await self.send(text_data=json.dumps(data))
         await self.send(bytes_data=compressed_data)
