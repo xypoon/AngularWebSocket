@@ -1,6 +1,6 @@
 from rest_framework.exceptions import ValidationError
 from rest_framework import serializers
-from .models import Property, Bid, Auction, RequestLatency
+from .models import Property, Bid, Auction, RequestLatency, PropertySpecifications
 from django.conf import settings
 from django.contrib.auth.models import User  # Update if you use a custom User model
 
@@ -68,4 +68,9 @@ class AuctionSerializer(serializers.ModelSerializer):
 class LatencyRecordSerializer(serializers.ModelSerializer):
     class Meta:
         model = RequestLatency
+        fields = '__all__'
+
+class PropertySpecificationsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PropertySpecifications
         fields = '__all__'

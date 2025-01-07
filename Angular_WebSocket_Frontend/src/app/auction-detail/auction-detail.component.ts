@@ -21,6 +21,7 @@ export class AuctionDetailComponent implements OnInit, OnDestroy {
   currentBid: number = 0;
   bidAmount: number = 0;
   pollSubscription: Subscription | null = null;
+  propertySpecs: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -36,6 +37,14 @@ export class AuctionDetailComponent implements OnInit, OnDestroy {
     const propertyId = this.route.snapshot.paramMap.get('id');
     if (propertyId) {
       this.fetchProperty(propertyId);
+      this.propertyService.getPropertySpecsById(propertyId).subscribe(
+        (data) => {
+          this.propertySpecs = data[0];
+          console.log('Property specifications:', this.propertySpecs);
+          
+        },
+        (error) => console.error('Error fetching property specifications:', error)
+      );
       this.startPolling(propertyId);
     }
   }

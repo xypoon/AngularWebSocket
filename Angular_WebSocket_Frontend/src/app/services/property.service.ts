@@ -32,4 +32,8 @@ export class PropertyService {
   getAuctionById(id: string): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/auctions/${id}`);
   }
+
+  getPropertySpecsById(id: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/property_specifications/?id=${id}`);
+  }
 }

@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import { MeasurementService } from '../services/measurement.service';
 import { BiddingWsService } from '../services/bidding-ws.service';
+import { PropertyService } from '../services/property.service';
 import * as pako from 'pako';
 
 @Component({
@@ -21,6 +22,7 @@ export class AuctionDetailWsComponent implements OnInit, OnDestroy {
   currentBid: number = 0;
   bidAmount: number = 0;
   wsSubscription: Subscription | null = null;
+  propertySpecs: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -28,12 +30,20 @@ export class AuctionDetailWsComponent implements OnInit, OnDestroy {
     private cdr: ChangeDetectorRef,
     private snackBar: MatSnackBar,
     private authService: AuthService,
-    private measurementService: MeasurementService
+    private measurementService: MeasurementService,
+    private propertyService: PropertyService
   ) { }
 
   ngOnInit(): void {
     const propertyId = this.route.snapshot.paramMap.get('id');
     if (propertyId) {
+      this.propertyService.getPropertySpecsById(propertyId).subscribe(
+        (data) => {
+          this.propertySpecs = data[0];
+          console.log('Property specifications:', this.propertySpecs);
+        },
+        (error) => console.error('Error fetching property specifications:', error)
+      );
       this.connectToWebSocket(propertyId);
     }
   }
