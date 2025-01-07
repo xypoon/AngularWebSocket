@@ -47,3 +47,25 @@ class RequestLatency(models.Model):
 
     def __str__(self):
         return f'{self.request_type} latency: {self.latency}'
+    
+# Model for Property Specifications Project Name	Street Name	Property Type	Transacted Price ($)	Area (SQFT)	Unit Price ($ PSF)	Sale Date	Type of Area	Area (SQM)	Unit Price ($ PSM)	Tenure	Postal District	Floor Level
+class PropertySpecifications(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    property_id = models.ForeignKey('Property', on_delete=models.CASCADE, related_name='property_specifications')
+    project_name = models.CharField(max_length=255, null=True, blank=True)
+    street_name = models.CharField(max_length=255, null=True, blank=True)
+    property_type = models.CharField(max_length=255, null=True, blank=True)
+    transacted_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    area_sqft = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    unit_price_psf = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    sale_date = models.DateTimeField(auto_now_add=True)
+    type_of_area = models.CharField(max_length=255, null=True, blank=True)
+    area_sqm = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    unit_price_psm = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    tenure = models.CharField(max_length=255, null=True, blank=True)
+    postal_district = models.CharField(max_length=255, null=True, blank=True)
+    floor_level = models.CharField(max_length=255, null=True, blank=True)
+    prediction = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.project_name} at {self.street_name}'
