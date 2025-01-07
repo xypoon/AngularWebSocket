@@ -1,6 +1,6 @@
 from rest_framework import viewsets
-from .models import Property, Bid, Auction
-from .serializers import PropertySerializer, BidSerializer, AuctionSerializer, LatencyRecordSerializer
+from .models import Property, Bid, Auction, PropertySpecifications
+from .serializers import PropertySerializer, BidSerializer, AuctionSerializer, LatencyRecordSerializer, PropertySpecificationsSerializer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
@@ -51,3 +51,14 @@ class LatencyRecordView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class PropertySpecificationsViewSet(viewsets.ModelViewSet):
+    queryset = PropertySpecifications.objects.all()
+    serializer_class = PropertySpecificationsSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        property_id = self.request.query_params.get('id')  # Get 'location' from query params
+        if property_id:
+            queryset = queryset.filter(property_id=property_id)  # Filter by 'location'
+        return queryset
