@@ -20,8 +20,8 @@ class Command(BaseCommand):
             title='CONCORDE SHOPPING CENTRE',
             description='Spacious Office Space with Nice Window View',
             location='OUTRAM ROAD',
-            starting_price=Decimal('300000.00'),
-            current_price=Decimal('300000.00'),
+            starting_price=Decimal('600000.00'),
+            current_price=Decimal('600000.00'),
             is_active=True
         )
 
@@ -29,8 +29,8 @@ class Command(BaseCommand):
             title='THOMSON V TWO',
             description='Big Retail Space with High Ceiling',
             location='SIN MING ROAD',
-            starting_price=Decimal('600000.00'),
-            current_price=Decimal('600000.00'),
+            starting_price=Decimal('300000.00'),
+            current_price=Decimal('300000.00'),
             is_active=True
         )
 
@@ -44,14 +44,14 @@ class Command(BaseCommand):
             property=property1,
             start_time=timezone.now(),
             end_time=timezone.now() + timezone.timedelta(days=7),
-            reserve_price=Decimal('300000.00')
+            reserve_price=Decimal('600000.00')
         )
 
         Auction.objects.create(
             property=property2,
             start_time=timezone.now(),
             end_time=timezone.now() + timezone.timedelta(days=5),
-            reserve_price=Decimal('600000.00')
+            reserve_price=Decimal('300000.00')
         )
 
         # using these specs for testing
