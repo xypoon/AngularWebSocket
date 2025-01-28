@@ -35,4 +35,4 @@ jobs:
     - run: cd Angular_WebSocket_Frontend/
 
     # Build the Angular project with SSL disabled
-    - run: ng build --prod --base-href /Angular_WebSocket_Frontend/ --ssl=false
+    - run: ng build --prod --ssl=false
