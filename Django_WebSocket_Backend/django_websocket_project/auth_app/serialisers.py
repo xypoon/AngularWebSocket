@@ -25,7 +25,9 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         user = authenticate(username=username, password=password)
 
         if user is None:
-            raise serializers.ValidationError('Invalid username or password')
+            raise serializers.ValidationError({
+                'detail': 'The username and password submitted do not match any user.'
+            })
 
         # Get the token for the authenticated user
         refresh = self.get_token(user)
