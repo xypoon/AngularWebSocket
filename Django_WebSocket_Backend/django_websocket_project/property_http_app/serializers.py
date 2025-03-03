@@ -24,10 +24,11 @@ class BidSerializer(serializers.ModelSerializer):
             except Property.DoesNotExist:
                 raise ValidationError("The specified property does not exist.")
 
-        if data['bid_amount'] <= property_instance.current_price:
-            raise ValidationError(
-                f"The bid amount {data['bid_amount']} must be greater than the current price of {property_instance.current_price}."
-            )
+        # Check if the bid amount is greater than the current price
+        # if data['bid_amount'] <= property_instance.current_price:
+        #     raise ValidationError(
+        #         f"The bid amount {data['bid_amount']} must be greater than the current price of {property_instance.current_price}."
+        #     )
 
         data['property'] = property_instance
         return data
